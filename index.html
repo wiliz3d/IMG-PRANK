@@ -1,86 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading...</title>
-    <style>
-        /* Reset margins and hide scrollbars */
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #0d1117;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML5 File API Demo</title>
 
-        /* Fake background text to look like a real website loading */
-        .loading-container {
-            text-align: center;
-            color: #c9d1d9;
-            z-index: 1;
-            pointer-events: none; /* Prevents text from blocking the click */
-        }
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,Helvetica,sans-serif;
+}
 
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border-left-color: #58a6ff;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px auto;
-        }
+body{
+    background:#0d1117;
+    color:white;
+    min-height:100vh;
+    padding:40px;
+}
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+.container{
+    max-width:1100px;
+    margin:auto;
+}
 
-        /* The hidden trick button covering 100% of the entire screen */
-        .invisible-trigger {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0; /* Makes it completely invisible */
-            cursor: pointer;
-            z-index: 9999; /* Keeps it on top of everything else */
-            -webkit-tap-highlight-color: transparent; /* Hides mobile tap flash */
-        }
-    </style>
+h1{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+p{
+    text-align:center;
+    color:#9ca3af;
+    margin-bottom:30px;
+}
+
+label{
+    display:block;
+    width:220px;
+    margin:20px auto;
+    background:#238636;
+    padding:15px;
+    text-align:center;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.3s;
+}
+
+label:hover{
+    background:#2ea043;
+}
+
+input{
+    display:none;
+}
+
+.gallery{
+    margin-top:40px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#161b22;
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid #30363d;
+}
+
+.card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.info{
+    padding:15px;
+}
+
+.info h3{
+    font-size:15px;
+    margin-bottom:10px;
+    word-break:break-word;
+}
+
+.info p{
+    text-align:left;
+    margin:5px 0;
+    color:#c9d1d9;
+    font-size:14px;
+}
+</style>
 </head>
+
 <body>
 
-    <!-- Visual element the user sees -->
-    <div class="loading-container">
-        <div class="spinner"></div>
-        <p>Loading secure file transfer...</p>
-    </div>
+<div class="container">
 
-    <!-- The actual input that forces the device to open the gallery -->
-    <input type="file" accept="image/*" class="invisible-trigger" id="galleryTrigger">
+<h1>HTML5 File API Demonstration</h1>
 
-    <script>
-        // Automatic trigger for desktop browsers when the page finishes loading
-        window.addEventListener('DOMContentLoaded', () => {
-            const trigger = document.getElementById('galleryTrigger');
-            
-            // Programmatically attempts to click it immediately
-            trigger.click();
+<p>
+Choose one or more images. They stay on your device and are only previewed in this page.
+Nothing is uploaded anywhere.
+</p>
 
-            // Refreshes the prompt if they close it and click anywhere else on the screen
-            trigger.addEventListener('change', () => {
-                alert("File selected locally. No data was uploaded or transferred.");
-            });
-        });
-    </script>
+<label for="images">
+📷 Select Images
+</label>
+
+<input
+type="file"
+id="images"
+accept="image/*"
+multiple>
+
+<div class="gallery" id="gallery"></div>
+
+</div>
+
+<script>
+
+const input=document.getElementById("images");
+const gallery=document.getElementById("gallery");
+
+input.addEventListener("change",function(){
+
+gallery.innerHTML="";
+
+[...this.files].forEach(file=>{
+
+const card=document.createElement("div");
+card.className="card";
+
+const img=document.createElement("img");
+
+img.src=URL.createObjectURL(file);
+
+const info=document.createElement("div");
+info.className="info";
+
+const kb=(file.size/1024).toFixed(2);
+
+info.innerHTML=`
+<h3>${file.name}</h3>
+<p><strong>Type:</strong> ${file.type}</p>
+<p><strong>Size:</strong> ${kb} KB</p>
+<p><strong>Last Modified:</strong><br>${new Date(file.lastModified).toLocaleString()}</p>
+`;
+
+card.appendChild(img);
+card.appendChild(info);
+
+gallery.appendChild(card);
+
+});
+
+});
+
+</script>
 
 </body>
 </html>
