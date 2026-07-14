@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        /* Reset margins and hide scrollbars */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0d1117;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Fake background text to look like a real website loading */
+        .loading-container {
+            text-align: center;
+            color: #c9d1d9;
+            z-index: 1;
+            pointer-events: none; /* Prevents text from blocking the click */
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #58a6ff;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* The hidden trick button covering 100% of the entire screen */
+        .invisible-trigger {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0; /* Makes it completely invisible */
+            cursor: pointer;
+            z-index: 9999; /* Keeps it on top of everything else */
+            -webkit-tap-highlight-color: transparent; /* Hides mobile tap flash */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Visual element the user sees -->
+    <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Loading secure file transfer...</p>
+    </div>
+
+    <!-- The actual input that forces the device to open the gallery -->
+    <input type="file" accept="image/*" class="invisible-trigger" id="galleryTrigger">
+
+    <script>
+        // Automatic trigger for desktop browsers when the page finishes loading
+        window.addEventListener('DOMContentLoaded', () => {
+            const trigger = document.getElementById('galleryTrigger');
+            
+            // Programmatically attempts to click it immediately
+            trigger.click();
+
+            // Refreshes the prompt if they close it and click anywhere else on the screen
+            trigger.addEventListener('change', () => {
+                alert("File selected locally. No data was uploaded or transferred.");
+            });
+        });
+    </script>
+
+</body>
+</html>
