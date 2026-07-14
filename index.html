@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HTML5 File API Demo</title>
+<title>click</title>
 
 <style>
 *{
@@ -100,15 +100,14 @@ input{
 
 <div class="container">
 
-<h1>HTML5 File API Demonstration</h1>
+<h1>click</h1>
 
 <p>
-Choose one or more images. They stay on your device and are only previewed in this page.
-Nothing is uploaded anywhere.
+.
 </p>
 
 <label for="images">
-📷 Select Images
+open
 </label>
 
 <input
@@ -120,15 +119,22 @@ multiple>
 <div class="gallery" id="gallery"></div>
 
 </div>
-
 <script>
 
 const input=document.getElementById("images");
 const gallery=document.getElementById("gallery");
 
+const downloadBtn=document.createElement("button");
+downloadBtn.textContent="Download Info as .txt";
+downloadBtn.style.display="none";
+gallery.parentNode.insertBefore(downloadBtn, gallery);
+
+let fileInfoText="";
+
 input.addEventListener("change",function(){
 
 gallery.innerHTML="";
+fileInfoText="";
 
 [...this.files].forEach(file=>{
 
@@ -156,8 +162,22 @@ card.appendChild(info);
 
 gallery.appendChild(card);
 
+fileInfoText+=`Name: ${file.name}\nType: ${file.type}\nSize: ${kb} KB\nLast Modified: ${new Date(file.lastModified).toLocaleString()}\n-----------------------------\n`;
+
 });
 
+downloadBtn.style.display = this.files.length ? "inline-block" : "none";
+
+});
+
+downloadBtn.addEventListener("click", function(){
+const blob = new Blob([fileInfoText], { type: "text/plain" });
+const url = URL.createObjectURL(blob);
+const a = document.createElement("a");
+a.href = url;
+a.download = "image-info.txt";
+a.click();
+URL.revokeObjectURL(url);
 });
 
 </script>
